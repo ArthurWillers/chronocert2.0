@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('course_id')->constrained()->cascadeOnDelete();
+            $table->string('name');
+            $table->decimal('max_hours', 8, 2);
             $table->timestamps();
         });
     }

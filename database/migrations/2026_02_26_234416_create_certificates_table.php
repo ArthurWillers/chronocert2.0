@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('certificates', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+            $table->string('title');
+            $table->decimal('hours', 8, 2);
             $table->timestamps();
         });
     }
