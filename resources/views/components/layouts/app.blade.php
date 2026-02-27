@@ -24,7 +24,7 @@
                     </a>
                     <a href=""
                        class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('courses.*') ? 'bg-zinc-100 text-zinc-900' : 'text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100' }}">
-                        Configurações
+                        Gerenciar Cursos
                     </a>
                 </div>
             </div>
@@ -89,18 +89,15 @@
             <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-1">
                 <a href="{{ route('dashboard') }}" @click="mobileOpen = false"
                    class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('dashboard') ? 'bg-zinc-100 text-zinc-900' : 'text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100' }}">
-                    <x-icon name="home" class="w-4 h-4" />
                     Dashboard
                 </a>
                 <a href="" @click="mobileOpen = false"
                    class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('certificates.*') ? 'bg-zinc-100 text-zinc-900' : 'text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100' }}">
-                    <x-icon name="document-text" class="w-4 h-4" />
                     Meus Certificados
                 </a>
                 <a href="" @click="mobileOpen = false"
                    class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('courses.*') ? 'bg-zinc-100 text-zinc-900' : 'text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100' }}">
-                    <x-icon name="cog-6-tooth" class="w-4 h-4" />
-                    Configurações
+                    Gerenciar Cursos
                 </a>
                 <hr class="my-1 border-neutral-200">
                 <a href="#" class="cursor-pointer inline-flex items-center justify-center w-full font-semibold px-3 py-2 text-sm rounded-lg bg-neutral-800 hover:bg-neutral-700 text-white border border-black/10 shadow-[inset_0px_1px_rgba(255,255,255,0.5)] gap-1">
