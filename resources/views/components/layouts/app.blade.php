@@ -19,10 +19,6 @@
                         Dashboard
                     </a>
                     <a href=""
-                       class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('certificates.*') ? 'bg-zinc-100 text-zinc-900' : 'text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100' }}">
-                        Meus Certificados
-                    </a>
-                    <a href=""
                        class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('courses.*') ? 'bg-zinc-100 text-zinc-900' : 'text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100' }}">
                         Gerenciar Cursos
                     </a>
@@ -90,10 +86,6 @@
                 <a href="{{ route('dashboard') }}" @click="mobileOpen = false"
                    class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('dashboard') ? 'bg-zinc-100 text-zinc-900' : 'text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100' }}">
                     Dashboard
-                </a>
-                <a href="" @click="mobileOpen = false"
-                   class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('certificates.*') ? 'bg-zinc-100 text-zinc-900' : 'text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100' }}">
-                    Meus Certificados
                 </a>
                 <a href="" @click="mobileOpen = false"
                    class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('courses.*') ? 'bg-zinc-100 text-zinc-900' : 'text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100' }}">
