@@ -7,8 +7,8 @@
 
 <body class="min-h-screen antialiased bg-neutral-50 text-neutral-900">
 
-    <nav class="bg-white border-b border-neutral-200 sticky top-0 z-10" x-data="{ mobileOpen: false }">
-        <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
+    <nav class="bg-white/70 backdrop-blur-sm border-b border-neutral-200 sticky top-0 z-10" x-data="{ mobileOpen: false }">
+        <div class=" mx-auto px-6 py-3 flex justify-between items-center">
             <div class="flex items-center gap-6">
                 <a href="{{ route('dashboard') }}">
                     <x-app-logo />
