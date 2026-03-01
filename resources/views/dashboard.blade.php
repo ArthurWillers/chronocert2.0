@@ -22,10 +22,10 @@
             </x-button>
         </x-card>
     @else
-        <div class="my-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="my-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <x-card class="flex items-center justify-between gap-4">
                 <div class="flex flex-col gap-0.5 flex-1">
-                    <span class="font-bold text-neutral-500 uppercase tracking-wide">Horas Concluídas</span>
+                    <span class="text-sm font-bold text-neutral-500 uppercase tracking-wide">Horas Concluídas</span>
                     <div class="flex items-end gap-1 mt-1">
                         <span
                             class="text-2xl font-bold text-neutral-900">{{ number_format($stats['completed_hours'], 0, ',', '.') }}h</span>
@@ -34,8 +34,10 @@
                     </div>
                     <span class="text-xs text-neutral-400">horas registradas</span>
                 </div>
-                <div class="shrink-0 w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
-                    <x-icon name="clock" class="w-6 h-6" />
+                <div class="shrink-0 w-24 h-24 flex items-center justify-center">
+                    <div class="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
+                        <x-icon name="clock" class="w-8 h-8" />
+                    </div>
                 </div>
             </x-card>
 
@@ -71,7 +73,7 @@
                 requestAnimationFrame(step);
             }))">
                 <div class="flex flex-col gap-0.5 flex-1">
-                    <span class="font-bold text-neutral-500 uppercase tracking-wide">Progresso Geral</span>
+                    <span class="text-sm font-bold text-neutral-500 uppercase tracking-wide">Progresso Geral</span>
                     <span class="text-sm text-neutral-400 mt-1">de {{ number_format($activeCourse->total_hours, 1) }}h
                         totais</span>
                 </div>
@@ -92,28 +94,30 @@
 
             <x-card class="flex items-center justify-between gap-4">
                 <div class="flex flex-col gap-0.5 flex-1">
-                    <span class="font-bold text-neutral-500 uppercase tracking-wide">Categorias</span>
+                    <span class="text-sm font-bold text-neutral-500 uppercase tracking-wide">Categorias</span>
                     <span class="text-2xl font-bold text-neutral-900 mt-1">{{ $stats['categories_count'] }}</span>
                     <span
                         class="text-xs text-neutral-400">{{ $stats['categories_count'] === 1 ? 'categoria' : 'categorias' }}
                         no curso</span>
                 </div>
-                <div
-                    class="shrink-0 w-12 h-12 rounded-full bg-violet-50 flex items-center justify-center text-violet-500">
-                    <x-icon name="folder" class="w-6 h-6" />
+                <div class="shrink-0 w-24 h-24 flex items-center justify-center">
+                    <div class="w-16 h-16 rounded-full bg-violet-50 flex items-center justify-center text-violet-500">
+                        <x-icon name="folder" class="w-8 h-8" />
+                    </div>
                 </div>
             </x-card>
 
             <x-card class="flex items-center justify-between gap-4">
                 <div class="flex flex-col gap-0.5 flex-1">
-                    <span class="font-bold text-neutral-500 uppercase tracking-wide">Certificados</span>
+                    <span class="text-sm font-bold text-neutral-500 uppercase tracking-wide">Certificados</span>
                     <span class="text-2xl font-bold text-neutral-900 mt-1">{{ $stats['certificates_count'] }}</span>
                     <span
                         class="text-xs text-neutral-400">{{ $stats['certificates_count'] === 1 ? 'certificado enviado' : 'certificados enviados' }}</span>
                 </div>
-                <div
-                    class="shrink-0 w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-green-500">
-                    <x-icon name="inbox-arrow-down" class="w-6 h-6" />
+                <div class="shrink-0 w-24 h-24 flex items-center justify-center">
+                    <div class="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center text-green-500">
+                        <x-icon name="inbox-arrow-down" class="w-8 h-8" />
+                    </div>
                 </div>
             </x-card>
         </div>

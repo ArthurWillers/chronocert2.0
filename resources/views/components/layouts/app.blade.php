@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="overflow-x-hidden">
 
 <head>
     @include('partials.head')
@@ -8,7 +8,7 @@
 <body class="min-h-screen antialiased bg-neutral-50 text-neutral-900">
 
     <nav class="bg-white/70 backdrop-blur-sm border-b border-neutral-200 sticky top-0 z-10" x-data="{ mobileOpen: false }">
-        <div class=" mx-auto px-6 py-3 flex justify-between items-center">
+        <div class="w-full mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
             <div class="flex items-center gap-6">
                 <a href="{{ route('dashboard') }}">
                     <x-app-logo />
@@ -101,7 +101,7 @@
         </div>
     </nav>
 
-    <main class="max-w-7xl mx-auto px-6 py-6">
+    <main class="max-w-7xl mx-auto px-4 md:px-6 py-6">
         {{ $slot }}
     </main>
 
