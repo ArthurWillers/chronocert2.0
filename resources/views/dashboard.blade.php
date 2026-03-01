@@ -17,7 +17,7 @@
             <h2 class="text-lg font-semibold text-neutral-800 mb-1">Nenhum curso cadastrado</h2>
             <p class="text-neutral-500 text-sm mb-6 max-w-sm">Crie seu primeiro curso para começar a registrar as horas
                 complementares.</p>
-            <x-button href="#">
+            <x-button href="{{ route('courses.create') }}">
                 Criar meu primeiro curso
             </x-button>
         </x-card>
