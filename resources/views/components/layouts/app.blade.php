@@ -55,7 +55,7 @@
                             </div>
                         </div>
                         <hr class="my-1 border-neutral-300">
-                        <a href="" @click="open = !open"
+                        <a href="{{ route('settings.edit') }}" @click="open = !open"
                             class="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-neutral-700 hover:bg-neutral-200">
                             <x-icon name="cog-6-tooth" class="w-5 h-5" />
                             Configurações
