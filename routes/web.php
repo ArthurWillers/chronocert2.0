@@ -7,6 +7,6 @@ use Illuminate\Support\Facades\Route;
 Route::view('/', 'welcome');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::get('/dashboard/{course?}', DashboardController::class)->name('dashboard');
     Route::resource('courses', CourseController::class)->except(['show']);
 });

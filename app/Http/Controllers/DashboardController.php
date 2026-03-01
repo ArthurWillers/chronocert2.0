@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -10,15 +11,20 @@ class DashboardController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request)
+    public function __invoke(Request $request, ?Course $course = null)
     {
         $user = Auth::user();
-        $courses = $user->courses()->with('categories.certificates')->get();
+        $courses = $user->courses()->get();
 
         $activeCourse = null;
         if ($courses->isNotEmpty()) {
-            $activeCourseId = $request->input('course', $courses->first()->id);
-            $activeCourse = $courses->firstWhere('id', $activeCourseId) ?? $courses->first();
+            $activeCourseId = ($course && $courses->contains('id', $course->id))
+                ? $course->id
+                : $courses->first()->id;
+
+            $activeCourse = $user->courses()
+                ->with('categories.certificates')
+                ->find($activeCourseId);
         }
 
         $stats = [

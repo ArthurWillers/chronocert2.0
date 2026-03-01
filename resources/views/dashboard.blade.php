@@ -3,8 +3,17 @@
         <h1 class="text-2xl font-bold text-neutral-900">Visão Geral</h1>
         <p class="text-neutral-500">Selecione o curso para verificar o seu progresso</p>
         @unless ($courses->isEmpty())
-            <div class="my-4">
-                {{-- aqui vai os botoes de escolha de curso --}}
+            <div class="mt-4 flex flex-wrap gap-2">
+                @foreach ($courses as $course)
+                    @php $isActive = $activeCourse && $activeCourse->id === $course->id; @endphp
+                    <a href="{{ route('dashboard', $course->id) }}" @class([
+                        'inline-flex items-center px-4 py-1.5 rounded-full text-sm font-semibold transition-colors',
+                        'bg-neutral-900 text-white' => $isActive,
+                        'bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:border-neutral-300 border border-neutral-200' => !$isActive,
+                    ])>
+                        {{ $course->name }}
+                    </a>
+                @endforeach
             </div>
         @endunless
     </div>
