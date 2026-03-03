@@ -154,7 +154,7 @@ class CertificateController extends Controller
     {
         $request->validate([
             'certificates' => ['required', 'array', 'min:1'],
-            'certificates.*' => ['exists:certificates,id'],
+            'certificates.*' => ['integer'],
         ]);
 
         $certificates = Certificate::whereIn('id', $request->certificates)

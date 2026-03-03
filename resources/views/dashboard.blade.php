@@ -242,7 +242,6 @@
                 </div>
             @else
                 <div x-data="{
-                    loading: false,
                     selected: [],
                     allIds: {{ Js::from($allCertificates->pluck('id')) }},
                     get allSelected() {
@@ -261,17 +260,12 @@
                         class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-neutral-200 bg-neutral-50 px-6 py-3">
                         <span class="text-sm font-medium text-neutral-700"
                             x-text="selected.length + ' certificado(s) selecionado(s)'"></span>
-                        <form method="POST" action="{{ route('certificates.bulk-download') }}"
-                            @submit="loading = true">
-                            @csrf
-                            <template x-for="id in selected" :key="id">
-                                <input type="hidden" name="certificates[]" :value="id" />
-                            </template>
-                            <x-button type="submit" color="outline">
-                                <x-icon name="arrow-down-tray" class="w-4 h-4" />
-                                Baixar selecionados (.zip)
-                            </x-button>
-                        </form>
+                        <x-button color="outline" href="#"
+                            x-bind:href="'{{ route('certificates.bulk-download') }}?' + selected.map(id =>
+                                    'certificates[]=' + id).join(' & ')">
+                            <x-icon name="arrow-down-tray" class="w-4 h-4" />
+                            Baixar selecionados (.zip)
+                        </x-button>
                     </div>
 
                     {{-- Cabeçalho --}}

@@ -14,7 +14,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('certificates', CertificateController::class)->except(['show', 'index']);
     Route::get('/certificates/{certificate}/download', [CertificateController::class, 'download'])->name('certificates.download');
-    Route::post('/certificates/bulk-download', [CertificateController::class, 'bulkDownload'])->name('certificates.bulk-download');
+    Route::get('/certificates/bulk-download', [CertificateController::class, 'bulkDownload'])->name('certificates.bulk-download');
 
     Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
     Route::delete('/settings', [SettingsController::class, 'destroy'])->name('settings.destroy');
