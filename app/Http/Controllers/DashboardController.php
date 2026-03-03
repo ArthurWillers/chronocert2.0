@@ -23,7 +23,7 @@ class DashboardController extends Controller
                 : $courses->first()->id;
 
             $activeCourse = $user->courses()
-                ->with('categories.certificates')
+                ->with('categories.certificates.media')
                 ->find($activeCourseId);
         }
 
@@ -35,9 +35,13 @@ class DashboardController extends Controller
         ];
 
         if ($activeCourse) {
-            $completedHours = $activeCourse->categories
-                ->flatMap->certificates
-                ->sum('hours');
+            $completedHours = $activeCourse->categories->sum(function ($category) {
+                $categoryHours = $category->certificates->sum('hours');
+
+                return $category->max_hours > 0
+                    ? min($categoryHours, (float) $category->max_hours)
+                    : $categoryHours;
+            });
 
             $stats = [
                 'completed_hours' => $completedHours,

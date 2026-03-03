@@ -14,6 +14,13 @@ class Course extends Model
         'user_id',
     ];
 
+    protected static function booted(): void
+    {
+        static::deleting(function (Course $course) {
+            $course->categories()->get()->each->delete();
+        });
+    }
+
     protected function casts(): array
     {
         return [

@@ -135,8 +135,210 @@
             {{-- aqui vai o card de progresso por categoria --}}
         </div>
 
-        <div class="my-2">
-            {{-- aqui vai o card de certificados --}}
-        </div>
+        {{-- Card de Certificados --}}
+        <x-card class="my-4 !p-0 overflow-hidden">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-neutral-200">
+                <div>
+                    <h2 class="text-lg font-bold text-neutral-900">Certificados</h2>
+                    <p class="text-sm text-neutral-500">Certificados cadastrados neste curso</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <x-button href="{{ route('certificates.create', ['course_id' => $activeCourse->id]) }}">
+                        <x-icon name="plus" class="w-4 h-4" />
+                        Novo Certificado
+                    </x-button>
+                </div>
+            </div>
+
+            @php
+                $allCertificates = $activeCourse->categories->flatMap->certificates;
+            @endphp
+
+            @if ($allCertificates->isEmpty())
+                <div class="px-6">
+                    <x-empty-state message="Nenhum certificado cadastrado neste curso." icon="inbox-arrow-down"
+                        actionText="Cadastrar certificado" :actionRoute="route('certificates.create', ['course_id' => $activeCourse->id])" />
+                </div>
+            @else
+                <div x-data="{
+                    loading: false,
+                    selected: [],
+                    allIds: {{ Js::from($allCertificates->pluck('id')) }},
+                    get allSelected() {
+                        return this.allIds.length > 0 && this.selected.length === this.allIds.length;
+                    },
+                    toggleAll() {
+                        this.selected = this.allSelected ? [] : [...this.allIds];
+                    },
+                    toggleOne(id) {
+                        const idx = this.selected.indexOf(id);
+                        if (idx > -1) { this.selected.splice(idx, 1); } else { this.selected.push(id); }
+                    }
+                }">
+                    {{-- Barra de ações em massa --}}
+                    <div x-show="selected.length > 0" x-cloak
+                        class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-neutral-200 bg-neutral-50 px-6 py-3">
+                        <span class="text-sm font-medium text-neutral-700"
+                            x-text="selected.length + ' certificado(s) selecionado(s)'"></span>
+                        <form method="POST" action="{{ route('certificates.bulk-download') }}"
+                            @submit="loading = true">
+                            @csrf
+                            <template x-for="id in selected" :key="id">
+                                <input type="hidden" name="certificates[]" :value="id" />
+                            </template>
+                            <x-button type="submit" color="outline">
+                                <x-icon name="arrow-down-tray" class="w-4 h-4" />
+                                Baixar selecionados (.zip)
+                            </x-button>
+                        </form>
+                    </div>
+
+                    {{-- Cabeçalho --}}
+                    <div
+                        class="hidden md:grid grid-cols-12 gap-4 px-6 py-3 border-b border-neutral-200 bg-neutral-50 text-xs font-semibold text-neutral-500 uppercase tracking-wide">
+                        <div class="col-span-1 flex items-center">
+                            <input type="checkbox" @change="toggleAll()" :checked="allSelected"
+                                class="rounded border-neutral-300 text-neutral-800 focus:ring-accent cursor-pointer" />
+                        </div>
+                        <div class="col-span-4">Título</div>
+                        <div class="col-span-2">Categoria</div>
+                        <div class="col-span-1">Horas</div>
+                        <div class="col-span-2">Arquivo</div>
+                        <div class="col-span-2 text-right">Ações</div>
+                    </div>
+
+                    {{-- Selecionar todos (mobile) --}}
+                    <div class="md:hidden flex items-center gap-2 px-6 py-3 border-b border-neutral-100">
+                        <input type="checkbox" @change="toggleAll()" :checked="allSelected"
+                            class="rounded border-neutral-300 text-neutral-800 focus:ring-accent cursor-pointer" />
+                        <span class="text-sm text-neutral-500">Selecionar todos</span>
+                    </div>
+
+                    {{-- Linhas --}}
+                    <div class="divide-y divide-neutral-100">
+                        @foreach ($allCertificates as $certificate)
+                            @php
+                                $media = $certificate->getFirstMedia('certificate_file');
+                                $fileExtension = $media
+                                    ? strtoupper(pathinfo($media->file_name, PATHINFO_EXTENSION))
+                                    : null;
+                                $fileSize = $media ? number_format($media->size / 1024, 0, ',', '.') . ' KB' : null;
+                            @endphp
+
+                            {{-- Desktop row --}}
+                            <div
+                                class="hidden md:grid grid-cols-12 gap-4 items-center px-6 py-3 hover:bg-neutral-50 transition-colors">
+                                <div class="col-span-1">
+                                    <input type="checkbox" :checked="selected.includes({{ $certificate->id }})"
+                                        @change="toggleOne({{ $certificate->id }})"
+                                        class="rounded border-neutral-300 text-neutral-800 focus:ring-accent cursor-pointer" />
+                                </div>
+                                <div class="col-span-4">
+                                    <span
+                                        class="font-medium text-neutral-900 truncate block">{{ $certificate->title }}</span>
+                                </div>
+                                <div class="col-span-2">
+                                    <span
+                                        class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-neutral-100 text-neutral-600">
+                                        {{ $certificate->category->name ?? '—' }}
+                                    </span>
+                                </div>
+                                <div class="col-span-1 text-sm text-neutral-700 font-medium">
+                                    {{ number_format($certificate->hours, 1, ',', '.') }}h
+                                </div>
+                                <div class="col-span-2">
+                                    @if ($media)
+                                        <span
+                                            class="inline-flex items-center gap-1 text-xs font-medium {{ $fileExtension === 'PDF' ? 'text-red-500' : 'text-blue-500' }}">
+                                            <x-icon name="document" class="w-4 h-4" />
+                                            {{ $fileExtension }} · {{ $fileSize }}
+                                        </span>
+                                    @else
+                                        <span class="text-xs text-neutral-400">Sem arquivo</span>
+                                    @endif
+                                </div>
+                                <div class="col-span-2 flex items-center justify-end gap-1">
+                                    @if ($media)
+                                        <a href="{{ route('certificates.download', $certificate) }}"
+                                            class="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-colors"
+                                            title="Baixar">
+                                            <x-icon name="arrow-down-tray" class="w-4 h-4" />
+                                        </a>
+                                    @endif
+                                    <a href="{{ route('certificates.edit', $certificate) }}"
+                                        class="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-colors"
+                                        title="Editar">
+                                        <x-icon name="pencil" class="w-4 h-4" />
+                                    </a>
+                                    <form method="POST" action="{{ route('certificates.destroy', $certificate) }}"
+                                        onsubmit="return confirm('Tem certeza que deseja excluir este certificado?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                            class="p-1.5 rounded-lg text-neutral-400 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
+                                            title="Excluir">
+                                            <x-icon name="trash" class="w-4 h-4" />
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            {{-- Mobile row --}}
+                            <div class="md:hidden flex items-start gap-3 px-6 py-4">
+                                <input type="checkbox" :checked="selected.includes({{ $certificate->id }})"
+                                    @change="toggleOne({{ $certificate->id }})"
+                                    class="mt-0.5 rounded border-neutral-300 text-neutral-800 focus:ring-accent cursor-pointer" />
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="font-medium text-neutral-900 truncate">{{ $certificate->title }}</h3>
+                                    <div class="flex flex-wrap items-center gap-2 mt-1.5">
+                                        <span
+                                            class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-neutral-100 text-neutral-600">
+                                            {{ $certificate->category->name ?? '—' }}
+                                        </span>
+                                        <span
+                                            class="text-xs text-neutral-500 font-medium">{{ number_format($certificate->hours, 1, ',', '.') }}h</span>
+                                        @if ($media)
+                                            <span
+                                                class="inline-flex items-center gap-1 text-xs font-medium {{ $fileExtension === 'PDF' ? 'text-red-500' : 'text-blue-500' }}">
+                                                <x-icon name="document" class="w-3.5 h-3.5" />
+                                                {{ $fileExtension }} · {{ $fileSize }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <div class="flex items-center gap-1 mt-2">
+                                        @if ($media)
+                                            <a href="{{ route('certificates.download', $certificate) }}"
+                                                class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 transition-colors"
+                                                title="Baixar">
+                                                <x-icon name="arrow-down-tray" class="w-3.5 h-3.5" />
+                                                Baixar
+                                            </a>
+                                        @endif
+                                        <a href="{{ route('certificates.edit', $certificate) }}"
+                                            class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 transition-colors"
+                                            title="Editar">
+                                            <x-icon name="pencil" class="w-3.5 h-3.5" />
+                                            Editar
+                                        </a>
+                                        <form method="POST"
+                                            action="{{ route('certificates.destroy', $certificate) }}"
+                                            onsubmit="return confirm('Tem certeza que deseja excluir este certificado?')"
+                                            class="ml-auto">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-neutral-400 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
+                                                title="Excluir">
+                                                <x-icon name="trash" class="w-3.5 h-3.5" />
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+        </x-card>
     @endif
 </x-layouts.app>

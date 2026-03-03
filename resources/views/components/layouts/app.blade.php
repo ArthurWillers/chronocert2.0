@@ -26,7 +26,8 @@
             </div>
             <div class="flex items-center gap-2">
                 <div class="hidden md:block">
-                    <x-button href="#"><x-icon name="plus" class="size-5" /> Novo Certificado</x-button>
+                    <x-button href="{{ route('certificates.create') }}"><x-icon name="plus" class="size-5" /> Novo
+                        Certificado</x-button>
                 </div>
                 <x-dropdown position="bottom-end" class="ms-auto" accent contentClass="w-60">
                     <x-slot name="trigger">
@@ -93,7 +94,7 @@
                     Gerenciar Cursos
                 </a>
                 <hr class="my-1 border-neutral-200">
-                <a href="#"
+                <a href="{{ route('certificates.create') }}"
                     class="cursor-pointer inline-flex items-center justify-center w-full font-semibold px-3 py-2 text-sm rounded-lg bg-neutral-800 hover:bg-neutral-700 text-white border border-black/10 shadow-[inset_0px_1px_rgba(255,255,255,0.5)] gap-1">
                     <x-icon name="plus" class="w-4 h-4" /> Novo Certificado
                 </a>

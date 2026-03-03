@@ -14,6 +14,13 @@ class Category extends Model
         'max_hours',
     ];
 
+    protected static function booted(): void
+    {
+        static::deleting(function (Category $category) {
+            $category->certificates()->get()->each->delete();
+        });
+    }
+
     protected function casts(): array
     {
         return [

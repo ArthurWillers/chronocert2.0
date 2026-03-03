@@ -90,7 +90,7 @@ class CourseController extends Controller
                 ->filter()
                 ->all();
 
-            $course->categories()->whereNotIn('id', $keepIds)->delete();
+            $course->categories()->whereNotIn('id', $keepIds)->get()->each->delete();
 
             foreach ($request->categories as $categoryData) {
                 if (! empty($categoryData['id'])) {
