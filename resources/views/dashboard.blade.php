@@ -131,9 +131,90 @@
             </x-card>
         </div>
 
-        <div class="my-2">
-            {{-- aqui vai o card de progresso por categoria --}}
-        </div>
+        @if ($activeCourse->categories->isNotEmpty())
+            <x-card class="my-4 !p-0 overflow-hidden">
+                <div class="px-6 py-4 border-b border-neutral-200">
+                    <h2 class="text-lg font-bold text-neutral-900">Progresso por Categoria</h2>
+                    <p class="text-sm text-neutral-500">Horas aproveitadas em cada categoria (limitadas ao máximo
+                        permitido)</p>
+                </div>
+
+                <div class="divide-y divide-neutral-100">
+                    @foreach ($activeCourse->categories as $category)
+                        @php
+                            $catHours = $category->certificates->sum('hours');
+                            $catMax = (float) $category->max_hours;
+                            $catEffective = $catMax > 0 ? min($catHours, $catMax) : $catHours;
+                            $catPct = $catMax > 0 ? min(100, round(($catHours / $catMax) * 100, 1)) : 0;
+                            $catCerts = $category->certificates->count();
+
+                            $barColor = match (true) {
+                                $catPct >= 100 => 'bg-green-500',
+                                $catPct >= 67 => 'bg-blue-500',
+                                $catPct >= 34 => 'bg-amber-400',
+                                default => 'bg-red-400',
+                            };
+                            $catTextColor = match (true) {
+                                $catPct >= 100 => 'text-green-600',
+                                $catPct >= 67 => 'text-blue-600',
+                                $catPct >= 34 => 'text-amber-500',
+                                default => 'text-red-500',
+                            };
+                            $barBg = match (true) {
+                                $catPct >= 100 => 'bg-green-100',
+                                $catPct >= 67 => 'bg-blue-100',
+                                $catPct >= 34 => 'bg-amber-100',
+                                default => 'bg-red-100',
+                            };
+                        @endphp
+
+                        <div class="px-6 py-4" x-data="{ width: 0, displayPct: 0 }" x-init="requestAnimationFrame(() => requestAnimationFrame(() => {
+                            width = {{ $catPct }};
+                            const target = {{ $catPct }},
+                                duration = 800;
+                            let start = null;
+                        
+                            function step(ts) {
+                                if (!start) start = ts;
+                                const p = Math.min((ts - start) / duration, 1);
+                                displayPct = Math.round(p * target * 10) / 10;
+                                if (p < 1) requestAnimationFrame(step);
+                            }
+                            requestAnimationFrame(step);
+                        }))">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center gap-2 min-w-0">
+                                    <h3 class="font-semibold text-neutral-900 truncate">{{ $category->name }}</h3>
+                                    <span
+                                        class="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-neutral-100 text-neutral-500">
+                                        {{ $catCerts }} {{ $catCerts === 1 ? 'certificado' : 'certificados' }}
+                                    </span>
+                                </div>
+                                <div class="shrink-0 flex items-center gap-2 ml-4">
+                                    <span class="text-sm font-bold {{ $catTextColor }}"
+                                        x-text="displayPct + '%'">0%</span>
+                                    <span class="text-xs text-neutral-400">
+                                        {{ number_format($catEffective, 1, ',', '.') }}h /
+                                        {{ number_format($catMax, 1, ',', '.') }}h
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="w-full h-2.5 rounded-full {{ $barBg }} overflow-hidden">
+                                <div class="h-full rounded-full {{ $barColor }} transition-all duration-[800ms] ease-out"
+                                    :style="'width: ' + Math.min(width, 100) + '%'" style="width: 0%">
+                                </div>
+                            </div>
+                            @if ($catHours > $catMax && $catMax > 0)
+                                <p class="text-xs text-neutral-400 mt-1.5">
+                                    {{ number_format($catHours - $catMax, 1, ',', '.') }}h excedente (não
+                                    contabilizada{{ $catHours - $catMax > 1 ? 's' : '' }})
+                                </p>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            </x-card>
+        @endif
 
         {{-- Card de Certificados --}}
         <x-card class="my-4 !p-0 overflow-hidden">
