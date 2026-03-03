@@ -21,6 +21,8 @@ class CertificateController extends Controller
      */
     public function create(Request $request)
     {
+        $this->authorize('create', Certificate::class);
+
         $courses = Auth::user()->courses()->with('categories')->get();
 
         $selectedCourseId = $request->query('course_id');
@@ -34,11 +36,12 @@ class CertificateController extends Controller
      */
     public function store(StoreCertificateRequest $request)
     {
+        $this->authorize('create', Certificate::class);
+
         $category = Category::with('course')->findOrFail($request->category_id);
 
         // Verify that the category belongs to a course owned by the user
-        $course = $category->course;
-        if ($course->user_id !== Auth::id()) {
+        if ($category->course->user_id !== Auth::id()) {
             abort(403);
         }
 
@@ -55,7 +58,7 @@ class CertificateController extends Controller
                 ->toMediaCollection('certificate_file');
         }
 
-        return redirect()->route('dashboard', $course->id)->with('toast', [
+        return redirect()->route('dashboard', $category->course->id)->with('toast', [
             'type' => 'success',
             'message' => 'Certificado cadastrado com sucesso!',
         ]);

@@ -17,7 +17,7 @@ class Course extends Model
     protected static function booted(): void
     {
         static::deleting(function (Course $course) {
-            $course->categories()->get()->each->delete();
+            $course->categories()->each(fn (Category $category) => $category->delete());
         });
     }
 

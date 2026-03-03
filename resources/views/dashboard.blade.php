@@ -132,7 +132,7 @@
         </div>
 
         @if ($activeCourse->categories->isNotEmpty())
-            <x-card class="my-4 !p-0 overflow-hidden">
+            <x-card class="my-4 p-0! overflow-hidden">
                 <div class="px-6 py-4 border-b border-neutral-200">
                     <h2 class="text-lg font-bold text-neutral-900">Progresso por Categoria</h2>
                     <p class="text-sm text-neutral-500">Horas aproveitadas em cada categoria (limitadas ao máximo
@@ -200,7 +200,7 @@
                                 </div>
                             </div>
                             <div class="w-full h-2.5 rounded-full {{ $barBg }} overflow-hidden">
-                                <div class="h-full rounded-full {{ $barColor }} transition-all duration-[800ms] ease-out"
+                                <div class="h-full rounded-full {{ $barColor }} transition-all duration-800 ease-out"
                                     :style="'width: ' + Math.min(width, 100) + '%'" style="width: 0%">
                                 </div>
                             </div>
@@ -217,7 +217,7 @@
         @endif
 
         {{-- Card de Certificados --}}
-        <x-card class="my-4 !p-0 overflow-hidden">
+        <x-card class="my-4 p-0! overflow-hidden">
             <div class="flex items-center justify-between px-6 py-4 border-b border-neutral-200">
                 <div>
                     <h2 class="text-lg font-bold text-neutral-900">Certificados</h2>

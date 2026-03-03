@@ -17,7 +17,7 @@ class Category extends Model
     protected static function booted(): void
     {
         static::deleting(function (Category $category) {
-            $category->certificates()->get()->each->delete();
+            $category->certificates()->each(fn (Certificate $certificate) => $certificate->delete());
         });
     }
 

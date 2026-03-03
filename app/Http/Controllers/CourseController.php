@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCourseRequest;
 use App\Http\Requests\UpdateCourseRequest;
+use App\Models\Category;
 use App\Models\Course;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
@@ -90,7 +91,9 @@ class CourseController extends Controller
                 ->filter()
                 ->all();
 
-            $course->categories()->whereNotIn('id', $keepIds)->get()->each->delete();
+            $course->categories()
+                ->whereNotIn('id', $keepIds)
+                ->each(fn (Category $category) => $category->delete());
 
             foreach ($request->categories as $categoryData) {
                 if (! empty($categoryData['id'])) {

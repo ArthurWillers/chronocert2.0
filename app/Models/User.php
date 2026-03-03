@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -62,12 +63,24 @@ class User extends Authenticatable
         return $first.$last;
     }
 
-    public function courses()
+    /**
+     * Boot the model and register event handlers.
+     */
+    protected static function booted(): void
+    {
+        static::deleting(function (User $user) {
+            // Delete courses manually so Eloquent events fire
+            // and Spatie media files are properly cleaned up
+            $user->courses()->each(fn (Course $course) => $course->delete());
+        });
+    }
+
+    public function courses(): HasMany
     {
         return $this->hasMany(Course::class);
     }
 
-    public function certificates()
+    public function certificates(): HasMany
     {
         return $this->hasMany(Certificate::class);
     }

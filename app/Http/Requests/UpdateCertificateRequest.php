@@ -23,7 +23,7 @@ class UpdateCertificateRequest extends FormRequest
             'category_id' => ['required', 'exists:categories,id'],
             'title' => ['required', 'string', 'max:255'],
             'hours' => ['required', 'numeric', 'min:0.5', 'max:99999'],
-            'file' => ['nullable', 'file', 'max:10240', 'mimes:pdf,jpg,jpeg,png,webp'],
+            'file' => ['nullable', 'file', 'min:1', 'max:10240', 'mimes:pdf,jpg,jpeg,png,webp', 'extensions:pdf,jpg,jpeg,png,webp'],
         ];
     }
 
@@ -41,8 +41,10 @@ class UpdateCertificateRequest extends FormRequest
             'hours.min' => 'A carga horária deve ser no mínimo 0.5 horas.',
             'hours.numeric' => 'A carga horária deve ser um número.',
             'file.file' => 'O envio deve ser um arquivo válido.',
+            'file.min' => 'O arquivo parece estar vazio ou corrompido.',
             'file.max' => 'O arquivo não pode ter mais de 10MB.',
             'file.mimes' => 'O arquivo deve ser PDF, JPG, JPEG, PNG ou WEBP.',
+            'file.extensions' => 'A extensão do arquivo deve ser PDF, JPG, JPEG, PNG ou WEBP.',
         ];
     }
 }

@@ -14,7 +14,7 @@ class DashboardController extends Controller
     public function __invoke(Request $request, ?Course $course = null)
     {
         $user = Auth::user();
-        $courses = $user->courses()->get();
+        $courses = $user->courses()->latest()->get();
 
         $activeCourse = null;
         if ($courses->isNotEmpty()) {
@@ -22,9 +22,8 @@ class DashboardController extends Controller
                 ? $course->id
                 : $courses->first()->id;
 
-            $activeCourse = $user->courses()
-                ->with('categories.certificates.media')
-                ->find($activeCourseId);
+            $activeCourse = $courses->find($activeCourseId);
+            $activeCourse?->load('categories.certificates.category', 'categories.certificates.media');
         }
 
         $stats = [

@@ -18,15 +18,51 @@
                     courseId: '{{ old('course_id', $certificate->category->course->id ?? '') }}',
                     courses: {{ Js::from($courses) }},
                     fileName: '',
+                    fileSize: '',
+                    fileError: '',
+                    maxSize: 10 * 1024 * 1024,
+                    allowedTypes: ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'],
+                    allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png', 'webp'],
                     hasExistingFile: {{ $certificate->getFirstMedia('certificate_file') ? 'true' : 'false' }},
                     get categories() {
                         if (!this.courseId) return [];
                         const course = this.courses.find(c => c.id == this.courseId);
                         return course ? course.categories : [];
                     },
+                    formatSize(bytes) {
+                        if (bytes < 1024) return bytes + ' B';
+                        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + ' KB';
+                        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+                    },
                     handleFile(event) {
                         const file = event.target.files[0];
-                        this.fileName = file ? file.name : '';
+                        this.fileError = '';
+                        this.fileName = '';
+                        this.fileSize = '';
+                
+                        if (!file) return;
+                
+                        const ext = file.name.split('.').pop()?.toLowerCase();
+                        if (!this.allowedTypes.includes(file.type) && !this.allowedExtensions.includes(ext)) {
+                            this.fileError = 'Tipo de arquivo não permitido. Use PDF, JPG, PNG ou WEBP.';
+                            event.target.value = '';
+                            return;
+                        }
+                
+                        if (file.size === 0) {
+                            this.fileError = 'O arquivo está vazio ou corrompido.';
+                            event.target.value = '';
+                            return;
+                        }
+                
+                        if (file.size > this.maxSize) {
+                            this.fileError = 'O arquivo excede o limite de 10MB. Tamanho: ' + this.formatSize(file.size) + '.';
+                            event.target.value = '';
+                            return;
+                        }
+                
+                        this.fileName = file.name;
+                        this.fileSize = this.formatSize(file.size);
                     }
                 }" @submit="loading = true">
                 @csrf
@@ -102,15 +138,23 @@
                             {{ $currentMedia ? 'Substituir arquivo (opcional)' : 'Arquivo do Certificado' }}
                         </label>
                         <label
-                            class="flex flex-col items-center justify-center w-full py-8 border-2 border-dashed rounded-xl cursor-pointer transition-colors border-neutral-300 hover:border-neutral-400 hover:bg-neutral-50">
-                            <div class="flex flex-col items-center justify-center" x-show="!fileName">
+                            class="flex flex-col items-center justify-center w-full py-8 border-2 border-dashed rounded-xl cursor-pointer transition-colors"
+                            :class="fileError ? 'border-red-400 bg-red-50 hover:border-red-500' :
+                                'border-neutral-300 hover:border-neutral-400 hover:bg-neutral-50'">
+                            <div class="flex flex-col items-center justify-center" x-show="!fileName && !fileError">
                                 <x-icon name="arrow-up-tray" class="w-8 h-8 text-neutral-400 mb-2" />
                                 <p class="text-sm font-medium text-neutral-600">Clique para enviar</p>
                                 <p class="text-xs text-neutral-400 mt-1">PDF, JPG, PNG ou WEBP (máx. 10MB)</p>
                             </div>
-                            <div class="flex items-center gap-2" x-show="fileName" x-cloak>
+                            <div class="flex flex-col items-center gap-1" x-show="fileError" x-cloak>
+                                <x-icon name="exclamation-triangle" class="w-8 h-8 text-red-400 mb-1" />
+                                <p class="text-sm font-medium text-red-600" x-text="fileError"></p>
+                                <p class="text-xs text-red-400">Clique para selecionar outro arquivo</p>
+                            </div>
+                            <div class="flex items-center gap-2" x-show="fileName && !fileError" x-cloak>
                                 <x-icon name="document" class="w-6 h-6 text-green-500" />
                                 <span class="text-sm font-medium text-neutral-700" x-text="fileName"></span>
+                                <span class="text-xs text-neutral-400" x-text="'(' + fileSize + ')'"></span>
                             </div>
                             <input type="file" name="file" class="hidden" accept=".pdf,.jpg,.jpeg,.png,.webp"
                                 @change="handleFile($event)" />
