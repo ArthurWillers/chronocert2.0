@@ -166,15 +166,15 @@ class CertificateController extends Controller
             ]);
         }
 
-        $zipFileName = 'certificados_' . now()->format('Y-m-d_His') . '.zip';
-        $zipPath = storage_path('app/temp/' . $zipFileName);
+        $zipFileName = 'certificados_'.now()->format('Y-m-d_His').'.zip';
+        $zipPath = storage_path('app/temp/'.$zipFileName);
 
         // Ensure temp directory exists
         if (! is_dir(dirname($zipPath))) {
             mkdir(dirname($zipPath), 0755, true);
         }
 
-        $zip = new ZipArchive();
+        $zip = new ZipArchive;
         if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
             return back()->with('toast', [
                 'type' => 'error',
