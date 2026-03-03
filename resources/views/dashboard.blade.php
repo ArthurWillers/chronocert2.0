@@ -218,17 +218,17 @@
 
         {{-- Card de Certificados --}}
         <x-card class="my-4 p-0! overflow-hidden">
-            <div class="flex items-center justify-between px-6 py-4 border-b border-neutral-200">
+            <div
+                class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-6 py-4 border-b border-neutral-200">
                 <div>
                     <h2 class="text-lg font-bold text-neutral-900">Certificados</h2>
                     <p class="text-sm text-neutral-500">Certificados cadastrados neste curso</p>
                 </div>
-                <div class="flex items-center gap-2">
-                    <x-button href="{{ route('certificates.create', ['course_id' => $activeCourse->id]) }}">
-                        <x-icon name="plus" class="w-4 h-4" />
-                        Novo Certificado
-                    </x-button>
-                </div>
+                <x-button href="{{ route('certificates.create', ['course_id' => $activeCourse->id]) }}"
+                    class="w-full sm:w-auto justify-center">
+                    <x-icon name="plus" class="w-4 h-4" />
+                    Novo Certificado
+                </x-button>
             </div>
 
             @php
